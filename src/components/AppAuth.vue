@@ -80,15 +80,16 @@
                             <label class="inline-block mb-2">Name</label>
                             <vee-field type="text" name="name"
                                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                                placeholder="Enter Name" />
+                                placeholder="Enter Name"/>
                                 <ErrorMessage class="text-red-600" name="name"/>
                         </div>
                         <!-- Email -->
                         <div class="mb-3">
                             <label class="inline-block mb-2">Email</label>
-                            <input type="email"
+                            <vee-field type="email" name="email"
                                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
                                 placeholder="Enter Email" />
+                                <ErrorMessage class="text-red-600" name="email"/>
                         </div>
                         <!-- Age -->
                         <div class="mb-3">
@@ -146,8 +147,8 @@
             return {
                 tab: 'login',
                 schema: {
-                   name: 'required',
-                   email: '',
+                   name: 'required|min:3|max:100|alpha_spaces',
+                   email: 'required|email|min:3|max:100',
                    age: '',
                    password: '',
                    confirm_password: '',
