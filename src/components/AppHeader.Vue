@@ -19,7 +19,7 @@
             </div>
         </nav>
     </header>
-</template>
+</template>      
 
 <script>
     import { mapStores } from 'pinia';
