@@ -57,7 +57,11 @@ export default {
                 const message = messages[context.rule.name] ? messages[context.rule.name] : `The field ${context.field} is invalid.`
 
                 return message;
-            }
+            },
+            validateOnBlur: true,
+            validateOnChange: true,
+            validateOnInput: false,
+            validateOnModelUpdate: true
         });
     }
 };
