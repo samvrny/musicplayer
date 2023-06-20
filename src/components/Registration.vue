@@ -73,7 +73,9 @@
 </template>
 
 <script>
-import firebase from '@/includes/firebase';
+import { auth, usersCollection } from '@/includes/firebase';
+import { mapWritableState } from 'pinia';
+import useUserStore from '@/stores/user';
 
 export default {
     name: 'Registration',
@@ -108,22 +110,43 @@ export default {
             let userCredentials = null;
 
             try {
-                userCredentials = await firebase.auth().createUserWithEmailAndPassword(
+                userCredentials = await auth.createUserWithEmailAndPassword(
                     values.email, values.password
                 );
             } catch (error) {
                 this.registration_in_submission = false;
                 this.registration_alert_variant = 'bg-red-500';
                 this.registration_alert_message = 'An unexpected error occured. Please try again later';
-                
+
                 return;
             }
+
+            try {
+                await usersCollection.add({
+                    name: values.name,
+                    email: values.email,
+                    age: values.age,
+                    country: values.country,
+                    tos: values.tos
+                });
+            } catch (error) {
+                this.registration_in_submission = false;
+                this.registration_alert_variant = 'bg-red-500';
+                this.registration_alert_message = 'An unexpected error occured. Please try again later';
+
+                return;
+            }
+
+            this.userLoggedIn = true;
 
             this.registration_alert_variant = 'bg-green-500';
             this.registration_alert_message = 'Success! Your account has been created.'
 
             console.log(userCredentials)
         }
+    },
+    computed: {
+        ...mapWritableState(useUserStore, ['userLoggedIn'])
     }
 }
 </script>
