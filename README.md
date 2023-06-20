@@ -1,57 +1,31 @@
-# megamusic
+# Mega Music
 
-This template should help get you started developing with Vue 3 in Vite.
+## Description
 
-## Recommended IDE Setup
+This is a music player that is written as part of the ZTM Academys Vue Developer 2023 course. The music player allows users to create an account and upload and play music with it. 
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Installation
 
-## Customize configuration
+If you wish to run the application locally, clone the repository into a directory on your machine. Then, in the command line in the root directory of the application, run npm install to install all the dependancies. From there, you can run npm run dev to start a local server and test the application locally.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Deployed Application
 
-## Project Setup
+This application has not been deployed yet. Come back soon to see the finished project!
 
-```sh
-npm install
-```
+## Built With
 
-### Compile and Hot-Reload for Development
+* HTML
+* CSS
+* Javascript
+* Vue
+* Vite
+* Firebase
+* Tailwind
+* PostCSS
+* Pinia
+* VeeValidate
 
-```sh
-npm run dev
-```
+## Contributing
 
-### Compile and Minify for Production
+Made by Samuel Varney, with a walkthrough from the ZTM Digital Coding Academy. 
 
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-npm run test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```

@@ -1,7 +1,6 @@
 <template>
     <!-- Registration Form -->
-    <vee-form :validation-schema="registrationSchema" @submit="register"
-        :initial-values="userData">
+    <vee-form :validation-schema="registrationSchema" @submit="register" :initial-values="userData">
         <!-- Name -->
         <div class="mb-3">
             <label class="inline-block mb-2">Name</label>
@@ -74,6 +73,8 @@
 </template>
 
 <script>
+import firebase from '@/includes/firebase';
+
 export default {
     name: 'Registration',
     data() {
@@ -98,16 +99,30 @@ export default {
         }
     },
     methods: {
-        register(values) {
+        async register(values) {
             this.registration_show_alert = true;
             this.registration_in_submission = true;
             this.registration_alert_variant = 'bg-blue-500';
             this.registration_alert_message = 'Please wait a moment while we create your account.';
 
+            let userCredentials = null;
+
+            try {
+                userCredentials = await firebase.auth().createUserWithEmailAndPassword(
+                    values.email, values.password
+                );
+            } catch (error) {
+                this.registration_in_submission = false;
+                this.registration_alert_variant = 'bg-red-500';
+                this.registration_alert_message = 'An unexpected error occured. Please try again later';
+                
+                return;
+            }
+
             this.registration_alert_variant = 'bg-green-500';
             this.registration_alert_message = 'Success! Your account has been created.'
 
-            console.log(values)
+            console.log(userCredentials)
         }
     }
 }
