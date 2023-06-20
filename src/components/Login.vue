@@ -17,10 +17,13 @@
                 placeholder="Password" />
             <ErrorMessage class="text-red-600" name="password" />
         </div>
-        <button type="submit"
+        <button type="submit" :disabled="login_in_submission"
             class="block w-full bg-purple-600 text-white py-1.5 px-3 rounded transition hover:bg-purple-700">
             Submit
         </button>
+        <div class="text-white text center font-bold p-4 mb-4 mt-4 rounded" v-if="login_show_alert" :class="login_alert_variant">
+            {{ login_alert_message }}
+        </div>
     </vee-form>
 </template>
 
@@ -33,10 +36,22 @@ export default {
                 email: 'required|email',
                 password: 'required'
             },
+            login_in_submission: false,
+            login_show_alert: false,
+            login_alert_variant: 'bg-blue-500',
+            login_alert_message: 'Logging in.'
         }
     },
     methods: {
         login(values) {
+            this.login_in_submission = true,
+            this.login_show_alert = true,
+            this.login_alert_variant = 'bg-blue-500',
+            this.login_alert_message = 'Logging in.'
+
+            this.login_alert_variant = 'bg-green-500';
+            this.login_alert_message = 'Success! You are logged in.'
+
             console.log(values)
         }
     }
