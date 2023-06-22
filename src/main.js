@@ -1,18 +1,27 @@
-import './assets/main.css'
-import './assets/base.css'
+import './assets/main.css';
+import './assets/base.css';
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
-import App from './App.vue'
-import router from './router'
-import VeeValidatePlugin from './includes/validation'
-import './includes/firebase'
+import App from './App.vue';
+import router from './router';
+import VeeValidatePlugin from './includes/validation';
+import { auth } from './includes/firebase';
 
-const app = createApp(App)
 
-app.use(createPinia())
-app.use(router)
-app.use(VeeValidatePlugin)
+let app;
 
-app.mount('#app')
+//checking firebase for a state change (whether a user is logged in or not)
+auth.onAuthStateChanged(() => {
+    //if the Vue app has not already been initialized, initialize it
+    if (!app) {
+        app = createApp(App);
+
+        app.use(createPinia());
+        app.use(router);
+        app.use(VeeValidatePlugin);
+    
+        app.mount('#app');
+    }
+});

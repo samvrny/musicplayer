@@ -7,10 +7,13 @@ export default defineStore("user", {
     }),
     actions: {
         async register(values) {
+            //create a user
             const userCredentials = await auth.createUserWithEmailAndPassword(
-                values.email, values.password
+                values.email, 
+                values.password
             );
 
+            //associate a users data with them using the user id genrerated by firebase
             await usersCollection.doc(userCredentials.user.uid).set({
                 name: values.name,
                 email: values.email,

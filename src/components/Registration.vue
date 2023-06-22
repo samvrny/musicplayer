@@ -101,6 +101,7 @@ export default {
     },
     methods: {
         ...mapActions(useUserStore, {
+            //give an alias to the register action in user.js
             createUser: 'register'
         }),
         async register(values) {
@@ -109,8 +110,9 @@ export default {
             this.registration_alert_variant = 'bg-blue-500';
             this.registration_alert_message = 'Please wait a moment while we create your account.';
 
-            //authentication 
+            //authentication for creating a user
             try {
+                //calling the 'register' function in user.js under the alias created above, createUser. Passing in the values from the form as arguments
                 await this.createUser(values)
             } catch (error) {
                 this.registration_in_submission = false;
