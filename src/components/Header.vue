@@ -19,7 +19,7 @@
                             <router-link class="px-2 text-white" :to="{ name: 'manage' }">Manage</router-link>
                         </li>
                         <li>
-                            <a class="px-2 text-white" href="#" @click.prevent="userStore.logout">Log Out</a>
+                            <a class="px-2 text-white" href="#" @click.prevent="signOut">Log Out</a>
                         </li>
                     </template>
                 </ul>
@@ -38,6 +38,14 @@
         methods: {
             toggleAuthModal() {
                 this.modalStore.isOpen = !this.modalStore.isOpen;
+            },
+            signOut() {
+                this.userStore.logout();
+
+                // if the user is on the manage page when they press Log Out, redirect them to the home page
+                if (this.$route.name === 'manage') {
+                    this.$router.push({ name: 'home' });
+                }
             }
         },
         computed: {

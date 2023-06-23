@@ -140,9 +140,11 @@ export default {
         const store = useUserStore();
         console.log('beforeRouteEnter')
 
+        //check if the user is logged in before rendering the manage page 
         if (store.userLoggedIn) {
             next();
         } else {
+            // if the user is not logged in, send them to the home page
             next({
                 name: 'home'
             });
