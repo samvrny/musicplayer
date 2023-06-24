@@ -21,8 +21,6 @@ const routes = [
     name: 'manage',
     component: Manage,
     beforeEnter: (to, from, next) => { //this is an example of a route specific guard
-      console.log('Manage Guard')
-
       next()
     },
     meta: {
@@ -42,7 +40,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  linkExactActiveClass: 'text-yellow-500'
+  linkExactActiveClass: 'text-yellow-400'
 });
 
 //this is an example of global router guards.
