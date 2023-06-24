@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
 import Manage from '@/views/Manage.vue';
+import useUserStore from '@/stores/user';
 
 const routes = [
   {
@@ -19,10 +20,13 @@ const routes = [
     // alias: ['/manage', '/boxcar'], //this is just an example of an alias.
     name: 'manage',
     component: Manage,
-    beforeEnter: (to, from, next) => {
+    beforeEnter: (to, from, next) => { //this is an example of a route specific guard
       console.log('Manage Guard')
 
       next()
+    },
+    meta: {
+      requiresAuth: true,
     }
   },
   {
@@ -41,10 +45,24 @@ const router = createRouter({
   linkExactActiveClass: 'text-yellow-500'
 });
 
+//this is an example of global router guards.
 router.beforeEach((to, from, next) => {
-  console.log('Global Guard')
+  //if the path/route does not have the requiresAuth meta rule, render the route
+  if(!to.meta.requiresAuth) {
+    next();
+    return;
+  } 
 
-  next()
+  const store = useUserStore();
+
+  //if a user is logged in, render the guarded route. If they aren't, send them to the home page
+  if(store.userLoggedIn) {
+    next();
+    return;
+  } else {
+    next({ name: 'home' });
+  }
+
 });
 
 export default router;

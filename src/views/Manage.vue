@@ -132,23 +132,23 @@
 </template>
 
 <script>
-import useUserStore from '@/stores/user';
+// import useUserStore from '@/stores/user';
 
 export default {
     name: 'Manage',
-    beforeRouteEnter(to, from, next) {
-        const store = useUserStore();
-        console.log('beforeRouteEnter')
+    //TODO: remove the below code. For anyone looking at this: The below code is left in as an example to myself on guarding routes within a component.
+    // beforeRouteEnter(to, from, next) {
+    //     const store = useUserStore();
 
-        //check if the user is logged in before rendering the manage page 
-        if (store.userLoggedIn) {
-            next();
-        } else {
-            // if the user is not logged in, send them to the home page
-            next({
-                name: 'home'
-            });
-        }
-    }
+    //     //check if the user is logged in before rendering the manage page 
+    //     if (store.userLoggedIn) {
+    //         next();
+    //     } else {
+    //         // if the user is not logged in, send them to the home page
+    //         next({
+    //             name: 'home'
+    //         });
+    //     }
+    // }
 }
 </script>
