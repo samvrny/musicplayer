@@ -15,7 +15,7 @@
                 @dragover.prevent.stop="is_dragover = true"
                 @dragenter.prevent.stop="is_dragover = true"
                 @dragleave.prevent.stop="is_dragover = false"
-                @drop.prevent.stop="upload"
+                @drop.prevent.stop="upload($event)"
                 >
                 <h5>Drop your files here</h5>
             </div>
@@ -54,9 +54,21 @@ export default {
         }
     },
     methods: {
-        upload() {
+        upload($event) {
             //set the background color back to white once the file has been dropped into the uploader
             this.is_dragover = false;
+
+            const files = [...$event.dataTransfer.files];
+
+            files.forEach((file) => {
+                //validate that the file is an audio file
+                if(file.type !== 'audio/mpeg') {
+                    return;
+                }
+
+            })
+
+            console.log(files)
         }
     }
 }
