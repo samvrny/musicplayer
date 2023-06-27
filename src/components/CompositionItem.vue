@@ -13,6 +13,13 @@
             </button>
         </div>
         <div v-show="showForm">
+            <div 
+                class="text-white text-center font-bold p-4 mb-4 rounded" 
+                v-if="showAlert"
+                :class="alertVariant"
+            >
+                {{ alertMessage }}
+            </div>
             <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
                 <div class="mb-3">
                     <label class="inline-block mb-2">Song Title</label>
@@ -30,13 +37,18 @@
                         name="genre"/>
                     <ErrorMessage class="text-red-600" name="genre" />
                 </div>
-                <button type="submit" class="py-1.5 px-3 rounded text-white bg-green-600">
+                <button 
+                    type="submit" 
+                    class="py-1.5 px-3 rounded text-white bg-green-600 mr-2"
+                    :disabled="inSubmission"
+                >
                     Submit
                 </button>
                 <button 
                     type="button" 
                     class="py-1.5 px-3 rounded text-white bg-gray-600"
-                    @click.prevent="showForm = !showForm"
+                    @click.prevent="showForm = false"
+                    :disabled="inSubmission"
                 >
                     Go Back
                 </button>
@@ -46,12 +58,22 @@
 </template>
 
 <script>
+import { songsCollection } from '@/includes/firebase'
+
 export default {
     name: "CompositionItem",
     props: {
         song: {
             type: Object,
             required: true,
+        },
+        updateSong: {
+            type: Function,
+            required: true
+        },
+        index: {
+            type: Number,
+            required: true
         }
     },
     data() {
@@ -60,12 +82,34 @@ export default {
             schema: {
                 modifiedName: "required|min:3|max:100",
                 genre: "min:3|max:100|alpha_spaces"
-            }
+            },
+            inSubmission: false,
+            showAlert: false,
+            alertVariant: 'bg-blue-500',
+            alertMessage: 'Please wait! Updating song info.'
         };
     },
     methods: {
-        edit(formData) {
-            console.log(formData)
+        async edit(values) {
+            this.inSubmission = true;
+            this.showAlert = true;
+            this.alertVariant = 'bg-blue-500';
+            this.alertMessage = 'Please wait! Updating song info.';
+
+            try {
+                await songsCollection.doc(this.song.documentId).update(values)
+            } catch (error) {
+                this.inSubmission = false;
+                this.alertVariant = 'bg-red-500';
+                this.alertMessage = 'Something went wrong. Please try again later.';
+                return;
+            }
+
+            this.updateSong(this.index, values)
+
+            this.inSubmission = false;
+            this.alertVariant = 'bg-green-500';
+            this.alertMessage = 'Success';
         }
     }
 }
