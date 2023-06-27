@@ -2,7 +2,10 @@
     <div class="border border-gray-200 p-3 mb-4 rounded">
         <div v-show="!showForm">
             <h4 class="inline-block text-2xl font-bold">{{ song.modifiedName }}</h4>
-            <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right">
+            <button 
+                class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right"
+                @click.prevent="deleteSong"
+                >
                 <i class="fa fa-times"></i>
             </button>
             <button 
@@ -58,7 +61,7 @@
 </template>
 
 <script>
-import { songsCollection } from '@/includes/firebase'
+import { songsCollection, storage } from '@/includes/firebase'
 
 export default {
     name: "CompositionItem",
@@ -73,6 +76,10 @@ export default {
         },
         index: {
             type: Number,
+            required: true
+        },
+        removeSong: {
+            type: Function,
             required: true
         }
     },
@@ -110,6 +117,17 @@ export default {
             this.inSubmission = false;
             this.alertVariant = 'bg-green-500';
             this.alertMessage = 'Success';
+        },
+        async deleteSong() {
+            const storageReference = storage.ref();
+            //TODO: Something is wrong with the setup for the database where the songs subdirectory is nested in another songs subdirectory. 
+            const songReference = storageReference.child(`songs/songs/${this.song.originalName}`);
+
+            await songReference.delete();
+
+            await songsCollection.doc(this.song.documentId).delete();
+
+            this.removeSong(this.index)
         }
     }
 }
