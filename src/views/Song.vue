@@ -24,14 +24,25 @@
                 <i class="fa fa-comments float-right text-green-400 text-2xl"></i>
             </div>
             <div class="p-6">
-                <form>
-                    <textarea
-                        class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded mb-4"
-                        placeholder="Your comment here..."></textarea>
-                    <button type="submit" class="py-1.5 px-3 rounded text-white bg-green-600 block">
+                <div 
+                    class="text-white text-center font-bold p-4 mb-4 rounded" 
+                    v-if="commentShowAlert" 
+                    :class="commentAlertVariant"
+                >
+                    {{ commentAlertMessage }}
+                </div>
+                <vee-form :validation-schema="schema" @submit="addComment">
+                    <vee-field
+                        class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded mb-4 resize-none h-24"
+                        placeholder="Your comment here..."
+                        as="textarea"
+                        name="comment"
+                        ></vee-field>
+                        <ErrorMessage class="text-red-600" name="comment" />
+                    <button :disabled="commentInSubmission" type="submit" class="py-1.5 px-3 rounded text-white bg-green-600 block mt-4">
                         Submit
                     </button>
-                </form>
+                </vee-form>
                 <!-- Sort Comments -->
                 <select
                     class="block mt-4 py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded">
@@ -119,25 +130,54 @@
 </template>
 
 <script>
-import { songsCollection } from '@/includes/firebase'
+import { songsCollection, auth, commentsCollection } from '@/includes/firebase'
 
 export default {
-    name: 'Song',
+    name: "Song",
     data() {
         return {
-            song: {}
-        }
+            song: {},
+            schema: {
+                comment: "required|min:3",
+            },
+            commentInSubmission: false,
+            commentShowAlert: false,
+            commentAlertVariant: 'bg-blue-500',
+            commentAlertMessage: 'Please wait while we submit your comment.'
+        };
     },
     async created() {
         const documentSnapshot = await songsCollection.doc(this.$route.params.id).get();
-
         //checks if the snapshot exists
-        if(!documentSnapshot.exists) {
-            this.$router.push({ name: 'home' });
+        if (!documentSnapshot.exists) {
+            this.$router.push({ name: "home" });
             return;
-        } 
+        }
+        this.song = documentSnapshot.data();
+    },
+    methods: {
+        async addComment(values, { resetForm }) {
+            this.commentInSubmission = true;
+            this.commentShowAlert = true;
+            this.commentAlertVariant = 'bg-blue-500';
+            this.commentAlertMessage = 'Please wait while we submit your comment.';
 
-        this.song = documentSnapshot.data()
-    }   
+            const comment = {
+                content: values.comment,
+                datePosted: new Date().toString(),
+                sid: this.$route.params.id,
+                name: auth.currentUser.displayName,
+                uid: auth.currentUser.uid
+            };
+
+            await commentsCollection.add(comment);
+
+            this.commentInSubmission = false;
+            this.commentAlertVariant = 'bg-green-500';
+            this.commentAlertMessage = 'Comment added!';
+
+            resetForm();
+        }
+    }
 }
 </script>
