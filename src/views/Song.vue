@@ -95,8 +95,12 @@ export default {
             this.$router.push({ name: "home" });
             return;
         }
-        this.song = documentSnapshot.data();
 
+        const { sort } = this.$route.query;
+
+        this.sort = sort === '1' || sort === '2' ? sort : '1';
+
+        this.song = documentSnapshot.data();
         this.getComments();
     },
     methods: {
@@ -149,6 +153,19 @@ export default {
                 } 
 
                 return new Date(a.datePosted) - new Date(b.datePosted)
+            });
+        }
+    },
+    watch: {
+        sort(newVal) {
+            if(newVal === this.$route.query.sort) {
+                return;
+            }
+
+            this.$router.push({
+                query: {
+                    sort: newVal,
+                }
             });
         }
     }
