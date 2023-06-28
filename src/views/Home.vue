@@ -27,11 +27,7 @@
       </div>
       <!-- Playlist -->
       <ol id="playlist">
-        <song-item
-          v-for="song in songs"
-          :key="song.documentId"
-          :song="song"
-        >
+        <song-item v-for="song in songs" :key="song.documentId" :song="song">
         </song-item>
       </ol>
       <!-- .. end Playlist -->
@@ -54,14 +50,35 @@ export default {
     }
   },
   async created() {
-    const snapshots = await songsCollection.get();
-    
-    snapshots.forEach((document) => {
-      this.songs.push({
-        documentId: document.id,
-        ...document.data(),
+    this.getSongs();
+
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+  methods: {
+    async getSongs() {
+      const snapshots = await songsCollection.get();
+
+      snapshots.forEach((document) => {
+        this.songs.push({
+          documentId: document.id,
+          ...document.data(),
+        })
       })
-    })
+    }
+  },
+  handleScroll() {
+    console.log('Scrolling')
+    const { scrollTop, offsetHeight } = document.documentElement;
+    const { innerHeight } = window;
+
+    const bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight;
+
+    if(bottomOfWindow) {
+      console.log('Bottom Reached')
+    }
   }
 }
 </script>
