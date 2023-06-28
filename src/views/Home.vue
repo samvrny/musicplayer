@@ -47,6 +47,8 @@ export default {
   data() {
     return {
       songs: [],
+      maxPerPage: 3,
+      pendingRequest: false,
     }
   },
   async created() {
@@ -58,27 +60,50 @@ export default {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
+    //this function is written to grab the songs and also enable the infinite scrolling look
     async getSongs() {
-      const snapshots = await songsCollection.get();
+      let snapshots
+
+      if(this.pendingRequest) {
+        return;
+      }
+
+      this.pendingRequest = true;
+
+      if(this.songs.length) {
+        const lastDocument = await songsCollection.doc(this.songs[this.songs.length -1].documentId).get();
+
+        snapshots = await songsCollection
+        .orderBy('modifiedName')
+        .startAfter(lastDocument)
+        .limit(this.maxPerPage)
+        .get();
+      } else {
+        snapshots = await songsCollection
+        .orderBy('modifiedName')
+        .limit(this.maxPerPage)
+        .get();
+      };
 
       snapshots.forEach((document) => {
         this.songs.push({
           documentId: document.id,
           ...document.data(),
-        })
-      })
+        });
+      });
+
+      this.pendingRequest = false;
+    },
+    handleScroll() {
+      const { scrollTop, offsetHeight } = document.documentElement;
+      const { innerHeight } = window;
+
+      const bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight;
+
+      if(bottomOfWindow) {
+        this.getSongs();
+      }
     }
   },
-  handleScroll() {
-    console.log('Scrolling')
-    const { scrollTop, offsetHeight } = document.documentElement;
-    const { innerHeight } = window;
-
-    const bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight;
-
-    if(bottomOfWindow) {
-      console.log('Bottom Reached')
-    }
-  }
 }
 </script>
