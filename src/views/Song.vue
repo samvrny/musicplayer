@@ -95,20 +95,23 @@ export default {
             commentAlertMessage: 'Please wait while we submit your comment.'
         };
     },
-    async created() {
-        const documentSnapshot = await songsCollection.doc(this.$route.params.id).get();
-        //checks if the snapshot exists
-        if (!documentSnapshot.exists) {
-            this.$router.push({ name: "home" });
-            return;
-        }
+    async beforeRouteEnter(to, from, next) {
+        const documentSnapshot = await songsCollection.doc(to.params.id).get();
 
-        const { sort } = this.$route.query;
+        next((vm) => {
+            //checks if the snapshot exists
+            if (!documentSnapshot.exists) {
+                vm.$router.push({ name: "home" });
+                return;
+            }
 
-        this.sort = sort === '1' || sort === '2' ? sort : '1';
+            const { sort } = vm.$route.query;
 
-        this.song = documentSnapshot.data();
-        this.getComments();
+            vm.sort = sort === '1' || sort === '2' ? sort : '1';
+
+            vm.song = documentSnapshot.data();
+            vm.getComments();
+        });
     },
     methods: {
         async addComment(values, { resetForm }) {
