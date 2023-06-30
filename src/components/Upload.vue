@@ -71,6 +71,19 @@ export default {
                     return;
                 }
 
+                //check to see if the internet connection is online
+                if(!navigator.onLine) {
+                    this.uploads.push({
+                        task: {},
+                        current_progress: 100,
+                        name: file.name,
+                        variant: 'bg-red-400',
+                        icon: 'fas fa-times',
+                        text_class: 'text-red-400'
+                    })
+                    return;
+                }
+
                 const storageReference = storage.ref('songs'); //mega-music-46b8c.appspot.com
                 const songsReference = storageReference.child(`songs/${file.name}`)
                 const task = songsReference.put(file);
