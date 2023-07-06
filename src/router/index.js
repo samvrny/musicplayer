@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import useUserStore from '@/stores/user';
 
 const Home = () => import('@/views/Home.vue');
-// const About = () => import('@/views/About.vue');
+const About = () => import('@/views/About.vue');
 const Manage = () => import('@/views/Manage.vue');
 const Song = () => import('@/views/Song.vue');
 
@@ -12,11 +12,11 @@ const routes = [
     name: 'home',
     component: Home
   },
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   component: About
-  // },
+  {
+    path: '/about',
+    name: 'about',
+    component: About
+  },
   {
     path: '/manage-music',
     // alias: ['/manage', '/boxcar'], //this is just an example of an alias.
